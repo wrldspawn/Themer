@@ -124,6 +124,7 @@ local function About(panel)
 	title:SetText("Themer")
 	title:SizeToContents()
 	title:DockMargin(8,8,8,8)
+	title:SetColor(panel:GetSkin().Colours.Label.Dark)
 
 	local github = panel:Button("GitHub")
 	github:SetIcon("icon16/world_link.png")

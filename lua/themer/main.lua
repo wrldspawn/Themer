@@ -122,3 +122,13 @@ hook.Add("PlayerInitialSpawn","Themer.ColorTweaks",function()
 		ColorHack()
 	end)
 end)
+
+hook.Remove("ForceDermaSkin", "CISKIN.Force")
+
+if hook.GetTable()["OnGamemodeLoaded"] and hook.GetTable()["OnGamemodeLoaded"]["CreateMenuBar"] then
+	local oldCreateMenuBar = oldCreateMenuBar or hook.GetTable()["OnGamemodeLoaded"]["CreateMenuBar"]
+	hook.Add( "OnGamemodeLoaded", "CreateMenuBar", function()
+		ColorHack()
+		oldCreateMenuBar()
+	end)
+end
