@@ -1,0 +1,9 @@
+{
+  "description": "A tool to make derma skin application easier.",
+  "ignore": ["*.psd", ".git/*", "icon.jpg", "themer.gma"],
+  "logo": "icon.jpg",
+  "tags": ["build", "scenic"],
+  "title": "Themer",
+  "type": "tool",
+  "workshopid": 938347376.0
+}
