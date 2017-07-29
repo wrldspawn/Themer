@@ -24,17 +24,37 @@ All changes require applying changes.]])
 
 	panel:CheckBox("Use Custom Skin","themer_enabled")
 
-	local list = panel:ComboBox("Skin:","derma_skinname")
+	local files = {}
+
 	for _,f in pairs(file.Find("materials/gwenskin/*.png","GAME")) do
 		f = f:gsub(".png","")
+		files[f] = true
+	end
+	for _,f in pairs(file.Find("materials/gwenskin/*.png","THIRDPARTY")) do
+		f = f:gsub(".png","")
+		files[f] = true
+	end
+
+	local list = panel:ComboBox("Skin:","derma_skinname")
+	for f,_ in pairs(files) do
 		list:AddChoice(f)
 	end
 
 	local reload = panel:Button("Refresh List")
 	reload.DoClick = function(s)
 		list:Clear()
+		files = {}
+
 		for _,f in pairs(file.Find("materials/gwenskin/*.png","GAME")) do
 			f = f:gsub(".png","")
+			files[f] = true
+		end
+		for _,f in pairs(file.Find("materials/gwenskin/*.png","THIRDPARTY")) do
+			f = f:gsub(".png","")
+			files[f] = true
+		end
+
+		for f,_ in pairs(files) do
 			list:AddChoice(f)
 		end
 	end

@@ -3,7 +3,10 @@ AddCSLuaFile("themer/main.lua")
 AddCSLuaFile("themer/iconbrowser.lua")
 AddCSLuaFile("themer/spawnmenu.lua")
 
-if SERVER then return end
+if SERVER then
+	resource.AddWorkshop("938347376")
+	return
+end
 include'skins/themer.lua'
 
 surface.CreateFont("Themer.Title",{

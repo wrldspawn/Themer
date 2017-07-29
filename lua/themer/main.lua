@@ -31,14 +31,14 @@ local function ColorHack()
 		DMenuOption.Init = function(self)
 			self:SetContentAlignment(4)
 			self:SetTextInset(30,0)
-			self:SetTextColor(self:GetSkin().Colours.Label.Default)
+			self:SetTextColor(self:GetSkin().Colours.Label.Dark)
 			self:SetChecked(false)
 		end
 		DTextEntry.GetTextColor = function(self)
-			return self.m_colText || self:GetSkin().Colours.Label.Default
+			return self.m_colText || self:GetSkin().Colours.Label.Dark
 		end
 		DTextEntry.GetCursorColor = function(self)
-			return self.m_colCursor || self:GetSkin().Colours.Label.Default
+			return self.m_colCursor || self:GetSkin().Colours.Label.Dark
 		end
 
 		derma.DefineControl( "DMenuOption", "Menu Option Line", DMenuOption, "DButton" )
@@ -54,6 +54,12 @@ concommand.Add("themer_refresh_derma",function()
 	include'skins/themer.lua'
 	derma.RefreshSkins()
 	ColorHack()
+
+	for k,v in pairs(hook.GetTable()["ForceDermaSkin"]) do
+		if k ~= "Themer" then
+			hook.Remove("ForceDermaSkin", k)
+		end
+	end
 end)
 
 hook.Add("SpawnMenuOpen","Themer.IconHack",function()
@@ -120,10 +126,19 @@ end)
 hook.Add("PlayerInitialSpawn","Themer.ColorTweaks",function()
 	timer.Simple(0,function()
 		ColorHack()
+		for k,v in pairs(hook.GetTable()["ForceDermaSkin"]) do
+			if k ~= "Themer" then
+				hook.Remove("ForceDermaSkin", k)
+			end
+		end
 	end)
 end)
 
-hook.Remove("ForceDermaSkin", "CISKIN.Force")
+for k,v in pairs(hook.GetTable()["ForceDermaSkin"]) do
+	if k ~= "Themer" then
+		hook.Remove("ForceDermaSkin", k)
+	end
+end
 
 if hook.GetTable()["OnGamemodeLoaded"] and hook.GetTable()["OnGamemodeLoaded"]["CreateMenuBar"] then
 	local oldCreateMenuBar = oldCreateMenuBar or hook.GetTable()["OnGamemodeLoaded"]["CreateMenuBar"]
