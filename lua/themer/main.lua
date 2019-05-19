@@ -24,12 +24,28 @@ local themer_icon_dupes      = CreateClientConVar("themer_icon_dupes",      "ico
 local themer_icon_saves      = CreateClientConVar("themer_icon_saves",      "icon16/disk.png",                  true)
 
 --Main loading
+local function ColorHack()
+	local DMenuOption = table.Copy(vgui.GetControlTable("DMenuOption"))
+	if themer_tweaks_uselabel:GetBool() then
+		DMenuOption.Init = function(self)
+			self:SetContentAlignment(4)
+			self:SetTextInset(30,0)
+			self:SetTextColor(self:GetSkin().Colours.Label.Dark)
+			self:SetChecked(false)
+		end
+
+		derma.DefineControl( "DMenuOption", "Menu Option Line", DMenuOption, "DButton" )
+		derma.DefineControl( "DMenuOptionCVar", "", vgui.GetControlTable("DMenuOptionCVar"), "DMenuOption" )
+	end
+end
+
 hook.Add("ForceDermaSkin","Themer",function()
 	if themer_enabled:GetBool() then return "themer" end
 end)
 concommand.Add("themer_refresh_derma",function()
 	include("skins/themer.lua")
 	derma.RefreshSkins()
+	ColorHack()
 
 	for k,v in pairs(hook.GetTable()["ForceDermaSkin"]) do
 		if k ~= "Themer" then
@@ -102,8 +118,9 @@ hook.Add("SpawnMenuOpen","Themer.IconHack",function()
 	end
 end)
 
-hook.Add("PlayerInitialSpawn","Themer.ColorTweaks",function()
+hook.Add("Initialize","Themer",function()
 	timer.Simple(0,function()
+		ColorHack()
 		for k,v in pairs(hook.GetTable()["ForceDermaSkin"]) do
 			if k ~= "Themer" then
 				hook.Remove("ForceDermaSkin", k)
@@ -116,4 +133,12 @@ for k,v in pairs(hook.GetTable()["ForceDermaSkin"]) do
 	if k ~= "Themer" then
 		hook.Remove("ForceDermaSkin", k)
 	end
+end
+
+if hook.GetTable()["OnGamemodeLoaded"] and hook.GetTable()["OnGamemodeLoaded"]["CreateMenuBar"] then
+	local oldCreateMenuBar = oldCreateMenuBar or hook.GetTable()["OnGamemodeLoaded"]["CreateMenuBar"]
+	hook.Add( "OnGamemodeLoaded", "CreateMenuBar", function()
+		ColorHack()
+		oldCreateMenuBar()
+	end)
 end

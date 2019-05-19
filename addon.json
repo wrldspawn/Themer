@@ -1,6 +1,13 @@
 {
   "description": "A tool to make derma skin application easier.",
-  "ignore": ["*.psd", ".git/*", ".gitignore", "icon.jpg", "themer.gma"],
+  "ignore": [
+    "*.psd",
+    ".git/*",
+    ".gitignore",
+    "icon.jpg",
+    "themer.gma",
+    "README.md"
+  ],
   "logo": "icon.jpg",
   "tags": ["build", "scenic"],
   "title": "Themer",
