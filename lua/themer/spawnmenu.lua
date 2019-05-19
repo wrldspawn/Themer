@@ -3,6 +3,7 @@ local derma_skinname = GetConVar("derma_skinname")
 
 local themer_tweaks_uselabel = GetConVar("themer_tweaks_uselabel")
 local themer_options_gear    = GetConVar("themer_options_gear")
+local themer_merge_options   = GetConVar("themer_merge_options")
 local themer_spawnlist_icons = GetConVar("themer_spawnlist_icons")
 
 local themer_icon_spawnlists = GetConVar("themer_icon_spawnlists")
@@ -133,10 +134,6 @@ All of these require reopening (not reloading) of the spawnmenu to apply changes
 	panel:TextEntry("#spawnmenu.category.saves",       "themer_icon_saves")
 end
 
-local function ServerSettings(panel)
-	panel:Help("soon\xe2\x84\xa2")
-end
-
 local function About(panel)
 	local title = vgui.Create("DLabel",panel)
 	title:Dock(TOP)
@@ -144,7 +141,7 @@ local function About(panel)
 	title:SetText("Themer")
 	title:SizeToContents()
 	title:DockMargin(8,8,8,8)
-	title:SetColor(panel:GetSkin().Colours.Label.Dark)
+	title:SetDark()
 
 	local github = panel:Button("GitHub")
 	github:SetIcon("icon16/world_link.png")
@@ -155,7 +152,6 @@ hook.Add("PopulateToolMenu","Themer.ToolMenu",function()
 	spawnmenu.AddToolMenuOption("Theming","Theming","\1Theme Options","Theme Options","","",MakeMenu)
 	spawnmenu.AddToolMenuOption("Theming","Configuration","Finer Tweaking","Finer Tweaking","","",Tweaks)
 	spawnmenu.AddToolMenuOption("Theming","Configuration","Icons","Icons","","",IconSettings)
-	spawnmenu.AddToolMenuOption("Theming","Server","Server Settings","Server Settings","","",ServerSettings)
 	spawnmenu.AddToolMenuOption("Theming","Misc","About","About","","",About)
 
 	for k,v in pairs(spawnmenu.GetTools()) do
@@ -194,12 +190,6 @@ local function ExtSettings()
 	IconSettings(icons)
 	icons:SetName("Icons")
 	tabs:AddSheet("Icons",icons,"icon16/pictures.png")
-
-	--Server Settings--
-	local sv = vgui.Create("DForm",tabs)
-	ServerSettings(sv)
-	sv:SetName("Server Settings")
-	tabs:AddSheet("Server Settings",sv,"icon16/server.png")
 
 	--About--
 	local about = vgui.Create("DForm",tabs)

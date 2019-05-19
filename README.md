@@ -1,2 +1,3 @@
 # [Themer](https://steamcommunity.com/sharedfiles/filedetails/?id=938347376)
-A tool to make derma skin application easier.
+Themer is a utility to replace derma themes on the fly without overwriting files.
+

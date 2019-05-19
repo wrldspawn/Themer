@@ -1,5 +1,5 @@
-include'themer/iconbrowser.lua'
-include'themer/spawnmenu.lua'
+include("themer/iconbrowser.lua")
+include("themer/spawnmenu.lua")
 
 --[[
 File: themer/main.lua
@@ -7,8 +7,8 @@ Info: This file loads everything and contains the main code of stuff
 --]]
 
 --cvars
-local themer_enabled = CreateClientConVar("themer_enabled", "1",           true)
-local derma_skinname    = CreateClientConVar("derma_skinname",    "gmoddefault", true)
+local themer_enabled         = CreateClientConVar("themer_enabled", "1",           true)
+local derma_skinname         = CreateClientConVar("derma_skinname",    "gmoddefault", true)
 
 local themer_tweaks_uselabel = CreateClientConVar("themer_tweaks_uselabel", "1", true)
 local themer_options_gear    = CreateClientConVar("themer_options_gear",    "0", true)
@@ -24,36 +24,12 @@ local themer_icon_dupes      = CreateClientConVar("themer_icon_dupes",      "ico
 local themer_icon_saves      = CreateClientConVar("themer_icon_saves",      "icon16/disk.png",                  true)
 
 --Main loading
-local function ColorHack()
-	local DMenuOption = table.Copy(vgui.GetControlTable("DMenuOption"))
-	local DTextEntry = table.Copy(vgui.GetControlTable("DTextEntry"))
-	if themer_tweaks_uselabel:GetBool() then
-		DMenuOption.Init = function(self)
-			self:SetContentAlignment(4)
-			self:SetTextInset(30,0)
-			self:SetTextColor(self:GetSkin().Colours.Label.Dark)
-			self:SetChecked(false)
-		end
-		DTextEntry.GetTextColor = function(self)
-			return self.m_colText || self:GetSkin().Colours.Label.Dark
-		end
-		DTextEntry.GetCursorColor = function(self)
-			return self.m_colCursor || self:GetSkin().Colours.Label.Dark
-		end
-
-		derma.DefineControl( "DMenuOption", "Menu Option Line", DMenuOption, "DButton" )
-		derma.DefineControl( "DMenuOptionCVar", "", vgui.GetControlTable("DMenuOptionCVar"), "DMenuOption" ) --need to reregister for colors to apply, that's all
-		derma.DefineControl( "DTextEntry", "A simple TextEntry control", DTextEntry, "TextEntry" )
-	end
-end
-
 hook.Add("ForceDermaSkin","Themer",function()
 	if themer_enabled:GetBool() then return "themer" end
 end)
 concommand.Add("themer_refresh_derma",function()
-	include'skins/themer.lua'
+	include("skins/themer.lua")
 	derma.RefreshSkins()
-	ColorHack()
 
 	for k,v in pairs(hook.GetTable()["ForceDermaSkin"]) do
 		if k ~= "Themer" then
@@ -67,6 +43,9 @@ hook.Add("SpawnMenuOpen","Themer.IconHack",function()
 	for k,v in pairs(ToolMenu.Items) do
 		if v.Name == "Options" then
 			v.Tab.Image:SetImage(themer_options_gear:GetBool() and "icon16/cog.png" or "icon16/wrench.png")
+		end
+		if v.Name == "Utilities" then
+			v.Tab.Image:SetImage(themer_options_gear:GetBool() and "icon16/cog.png" or "icon16/page_white_wrench.png")
 		end
 	end
 
@@ -125,7 +104,6 @@ end)
 
 hook.Add("PlayerInitialSpawn","Themer.ColorTweaks",function()
 	timer.Simple(0,function()
-		ColorHack()
 		for k,v in pairs(hook.GetTable()["ForceDermaSkin"]) do
 			if k ~= "Themer" then
 				hook.Remove("ForceDermaSkin", k)
@@ -138,12 +116,4 @@ for k,v in pairs(hook.GetTable()["ForceDermaSkin"]) do
 	if k ~= "Themer" then
 		hook.Remove("ForceDermaSkin", k)
 	end
-end
-
-if hook.GetTable()["OnGamemodeLoaded"] and hook.GetTable()["OnGamemodeLoaded"]["CreateMenuBar"] then
-	local oldCreateMenuBar = oldCreateMenuBar or hook.GetTable()["OnGamemodeLoaded"]["CreateMenuBar"]
-	hook.Add( "OnGamemodeLoaded", "CreateMenuBar", function()
-		ColorHack()
-		oldCreateMenuBar()
-	end)
 end
