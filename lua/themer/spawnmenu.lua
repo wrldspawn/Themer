@@ -1,5 +1,6 @@
 local themer_enabled = GetConVar("themer_enabled")
 local derma_skinname = GetConVar("derma_skinname")
+local themer_skin = GetConVar("themer_skin")
 
 local themer_tweaks_uselabel = GetConVar("themer_tweaks_uselabel")
 local themer_options_gear    = GetConVar("themer_options_gear")
@@ -36,14 +37,22 @@ All changes require applying changes.]])
 		files[f] = true
 	end
 
-	local list = panel:ComboBox("Skin:","derma_skinname")
+	local filelist = panel:ComboBox("Skin Image:","derma_skinname")
 	for f,_ in pairs(files) do
-		list:AddChoice(f)
+		filelist:AddChoice(f)
 	end
 
-	local reload = panel:Button("Refresh List")
+	panel:Help([[Alternatively, you can select a full built skin, which may have other features or better compatibiliy.]])
+
+	local skinlist = panel:ComboBox("Skin:","themer_skin")
+	for f,_ in pairs(derma.SkinList) do
+		skinlist:AddChoice(f)
+	end
+
+	local reload = panel:Button("Refresh Lists")
 	reload.DoClick = function(s)
-		list:Clear()
+		filelist:Clear()
+		skinlist:Clear()
 		files = {}
 
 		for _,f in pairs(file.Find("materials/gwenskin/*.png","GAME")) do
@@ -56,7 +65,11 @@ All changes require applying changes.]])
 		end
 
 		for f,_ in pairs(files) do
-			list:AddChoice(f)
+			filelist:AddChoice(f)
+		end
+
+		for f,_ in pairs(derma.SkinList) do
+			skinlist:AddChoice(f)
 		end
 	end
 	reload:SetIcon("icon16/arrow_refresh.png")

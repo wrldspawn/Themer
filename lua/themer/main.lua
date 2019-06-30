@@ -8,7 +8,8 @@ Info: This file loads everything and contains the main code of stuff
 
 --cvars
 local themer_enabled         = CreateClientConVar("themer_enabled", "1",           true)
-local derma_skinname         = CreateClientConVar("derma_skinname",    "gmoddefault", true)
+local derma_skinname         = CreateClientConVar("derma_skinname", "gmoddefault", true)
+local themer_skin            = CreateClientConVar("themer_skin", "themer",      true)
 
 local themer_tweaks_uselabel = CreateClientConVar("themer_tweaks_uselabel", "1", true)
 local themer_options_gear    = CreateClientConVar("themer_options_gear",    "0", true)
@@ -40,10 +41,10 @@ local function ColorHack()
 end
 
 hook.Add("ForceDermaSkin","Themer",function()
-	if themer_enabled:GetBool() then return "themer" end
+	if themer_enabled:GetBool() then return themer_skin:GetString() or "themer" end
 end)
 concommand.Add("themer_refresh_derma",function()
-	include("skins/themer.lua")
+	--include("skins/themer.lua")
 	derma.RefreshSkins()
 	ColorHack()
 
