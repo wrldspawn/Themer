@@ -44,7 +44,7 @@ hook.Add("ForceDermaSkin","Themer",function()
 	if themer_enabled:GetBool() then return themer_skin:GetString() or "themer" end
 end)
 concommand.Add("themer_refresh_derma",function()
-	--include("skins/themer.lua")
+	include("skins/themer.lua")
 	derma.RefreshSkins()
 	ColorHack()
 
