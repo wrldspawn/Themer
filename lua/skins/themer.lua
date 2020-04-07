@@ -1,7 +1,6 @@
 CreateClientConVar("derma_skinname","gmoddefault",true)
 
 local surface = surface
-local draw = draw
 local Color = Color
 
 SKIN = {}
@@ -9,9 +8,9 @@ SKIN = {}
 SKIN.PrintName 		= "Themer"
 SKIN.Author 		= ""
 SKIN.DermaVersion	= 1
-local S = "gwenskin/"..GetConVar("derma_skinname"):GetString()..".png"
+local S = "gwenskin/" .. GetConVar("derma_skinname"):GetString() .. ".png"
 
-local tex = Material( S )
+local tex = Material(S)
 if not tex or tex:IsError() then
 	tex = Material( "gwenskin/gmoddefault.png" )
 end
@@ -289,10 +288,12 @@ SKIN.Colours.Properties.Title				= GWEN.TextureColor( 4 + 8 * 13, 500 )
 SKIN.Colours.Properties.Column_Normal		= GWEN.TextureColor( 4 + 8 * 14, 508 )
 SKIN.Colours.Properties.Column_Selected		= GWEN.TextureColor( 4 + 8 * 15, 508 )
 SKIN.Colours.Properties.Column_Hover		= GWEN.TextureColor( 4 + 8 * 14, 500 )
+SKIN.Colours.Properties.Column_Disabled		= Color( 240, 240, 240 )
 SKIN.Colours.Properties.Border				= GWEN.TextureColor( 4 + 8 * 15, 500 )
 SKIN.Colours.Properties.Label_Normal		= GWEN.TextureColor( 4 + 8 * 16, 508 )
 SKIN.Colours.Properties.Label_Selected		= GWEN.TextureColor( 4 + 8 * 17, 508 )
 SKIN.Colours.Properties.Label_Hover			= GWEN.TextureColor( 4 + 8 * 16, 500 )
+SKIN.Colours.Properties.Label_Disabled		= GWEN.TextureColor( 4 + 8 * 16, 508 )
 
 SKIN.Colours.Category = {}
 SKIN.Colours.Category.Header				= GWEN.TextureColor( 4 + 8 * 18, 500 )
@@ -340,9 +341,9 @@ function SKIN:PaintFrame( panel, w, h )
 
 	if ( panel.m_bPaintShadow ) then
 
-		DisableClipping( true )
+		local wasEnabled = DisableClipping( true )
 		SKIN.tex.Shadow( -4, -4, w+10, h+10 )
-		DisableClipping( false )
+		DisableClipping( wasEnabled )
 
 	end
 
@@ -418,6 +419,31 @@ function SKIN:PaintCheckBox( panel, w, h )
 end
 
 --[[---------------------------------------------------------
+	RadioButton
+-----------------------------------------------------------]]
+function SKIN:PaintRadioButton( panel, w, h )
+
+	if ( panel:GetChecked() ) then
+
+		if ( panel:GetDisabled() ) then
+			self.tex.RadioButtonD_Checked( 0, 0, w, h )
+		else
+			self.tex.RadioButton_Checked( 0, 0, w, h )
+		end
+
+	else
+
+		if ( panel:GetDisabled() ) then
+			self.tex.RadioButtonD( 0, 0, w, h )
+		else
+			self.tex.RadioButton( 0, 0, w, h )
+		end
+
+	end
+
+end
+
+--[[---------------------------------------------------------
 	ExpandButton
 -----------------------------------------------------------]]
 function SKIN:PaintExpandButton( panel, w, h )
@@ -485,7 +511,7 @@ end
 -----------------------------------------------------------]]
 function SKIN:PaintMenuSpacer( panel, w, h )
 
-	surface.SetDrawColor( ColorAlpha(self.Colours.Label.Dark,100) )
+	surface.SetDrawColor( ColorAlpha(self.Colours.Label.Dark, 100) )
 	surface.DrawRect( 0, 0, w, h )
 
 end
@@ -496,7 +522,7 @@ end
 function SKIN:PaintMenuOption( panel, w, h )
 
 	if ( panel.m_bBackground && !panel:IsEnabled() ) then
-		surface.SetDrawColor( self.Colours.Label.Dark )
+		surface.SetDrawColor( ColorAlpha(self.Colours.Label.Dark, 50) )
 		surface.DrawRect( 0, 0, w, h )
 	end
 
@@ -899,7 +925,7 @@ end
 
 function SKIN:PaintNumSlider( panel, w, h )
 
-	surface.SetDrawColor( ColorAlpha(self.Colours.Label.Dark,100) )
+	surface.SetDrawColor( ColorAlpha(self.Colours.Label.Dark, 100) )
 	surface.DrawRect( 8, h / 2 - 1, w - 15, 1 )
 
 	PaintNotches( 8, h / 2 - 1, w - 16, 1, panel.m_iNotches )
