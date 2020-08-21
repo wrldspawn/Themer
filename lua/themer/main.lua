@@ -38,6 +38,28 @@ local function ColorHack()
 		derma.DefineControl( "DMenuOption", "Menu Option Line", DMenuOption, "DButton" )
 		derma.DefineControl( "DMenuOptionCVar", "", vgui.GetControlTable("DMenuOptionCVar"), "DMenuOption" )
 	end
+
+	local DProperties = table.Copy(vgui.GetControlTable("DProperties"))
+	local tblCategory = select(2, debug.getupvalue(DProperties.GetCategory, 1))
+	DProperties.GetCategory = function(self, name, bCreate)
+		local cat = self.Categories[name]
+		if IsValid(cat) then return cat end
+
+		if not bCreate then return end
+
+		cat = self:GetCanvas():Add(tblCategory)
+		cat.Label:SetText(name)
+
+		cat.Container.Paint = function(pnl, w, h)
+			self:GetSkin().tex.TextBox(0, 0, w, h)
+		end
+
+		self.Categories[name] = cat
+
+		return cat
+	end
+
+	derma.DefineControl("DProperties", "", DProperties, "Panel")
 end
 
 hook.Add("ForceDermaSkin","Themer",function()
