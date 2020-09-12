@@ -51,7 +51,7 @@ local function ColorHack()
 		cat.Label:SetText(name)
 
 		cat.Container.Paint = function(pnl, w, h)
-			self:GetSkin().tex.TextBox(0, 0, w, h)
+			self:GetSkin():PaintListBox(pnl, w, h)
 		end
 
 		self.Categories[name] = cat
