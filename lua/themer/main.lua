@@ -24,6 +24,20 @@ local themer_icon_pp         = CreateClientConVar("themer_icon_pp",         "ico
 local themer_icon_dupes      = CreateClientConVar("themer_icon_dupes",      "icon16/brick_link.png",            true)
 local themer_icon_saves      = CreateClientConVar("themer_icon_saves",      "icon16/disk.png",                  true)
 
+-- helpers
+local function getupvalues(f)
+	local i, t = 0, {}
+
+	while true do
+		i = i + 1
+		local key, val = debug.getupvalue(f, i)
+		if not key then break end
+		t[key] = val
+	end
+
+	return t
+end
+
 --Main loading
 local function ColorHack()
 	local DMenuOption = table.Copy(vgui.GetControlTable("DMenuOption"))
@@ -40,7 +54,7 @@ local function ColorHack()
 	end
 
 	local DProperties = table.Copy(vgui.GetControlTable("DProperties"))
-	local tblCategory = select(2, debug.getupvalue(DProperties.GetCategory, 1))
+	local tblCategory = getupvalues(DProperties.GetCategory).tblCategory
 	DProperties.GetCategory = function(self, name, bCreate)
 		local cat = self.Categories[name]
 		if IsValid(cat) then return cat end
