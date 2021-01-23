@@ -11,7 +11,6 @@ local themer_enabled         = CreateClientConVar("themer_enabled", "1",        
 local derma_skinname         = CreateClientConVar("derma_skinname", "gmoddefault", true)
 local themer_skin            = CreateClientConVar("themer_skin", "themer",      true)
 
-local themer_tweaks_uselabel = CreateClientConVar("themer_tweaks_uselabel", "1", true)
 local themer_options_gear    = CreateClientConVar("themer_options_gear",    "0", true)
 local themer_spawnlist_icons = CreateClientConVar("themer_spawnlist_icons", "0", true)
 
@@ -41,17 +40,38 @@ end
 --Main loading
 local function ColorHack()
 	local DMenuOption = table.Copy(vgui.GetControlTable("DMenuOption"))
-	if themer_tweaks_uselabel:GetBool() then
-		DMenuOption.Init = function(self)
-			self:SetContentAlignment(4)
-			self:SetTextInset(30,0)
-			self:SetTextColor(self:GetSkin().Colours.Label.Dark)
-			self:SetChecked(false)
+	local DComboBox = table.Copy(vgui.GetControlTable("DComboBox"))
+	DMenuOption.Init = function(self)
+		self:SetContentAlignment(4)
+		self:SetTextInset(30,0)
+		self:SetTextColor(self:GetSkin().Colours.Label.Dark)
+		self:SetChecked(false)
+	end
+
+	DMenuOption.UpdateColours = function(self, skin)
+		if self:IsHovered() then
+			self:SetTextColor(skin.Colours.Label.Bright)
+			return self:SetTextStyleColor(skin.Colours.Label.Bright)
 		end
 
-		derma.DefineControl( "DMenuOption", "Menu Option Line", DMenuOption, "DButton" )
-		derma.DefineControl( "DMenuOptionCVar", "", vgui.GetControlTable("DMenuOptionCVar"), "DMenuOption" )
+		self:SetTextColor(skin.Colours.Label.Dark)
+		return self:SetTextStyleColor(skin.Colours.Label.Dark)
 	end
+
+	derma.DefineControl( "DMenuOption", "Menu Option Line", DMenuOption, "DButton" )
+	derma.DefineControl( "DMenuOptionCVar", "", vgui.GetControlTable("DMenuOptionCVar"), "DMenuOption" )
+
+	DComboBox.UpdateColours = function(self, skin)
+		if self.Depressed or self:IsMenuOpen() then
+			self:SetTextColor(skin.Colours.Label.Bright)
+			return self:SetTextStyleColor(skin.Colours.Label.Bright)
+		end
+
+		self:SetTextColor(skin.Colours.Label.Dark)
+		return self:SetTextStyleColor(skin.Colours.Label.Dark)
+	end
+
+	derma.DefineControl( "DComboBox", "", DComboBox, "DButton" )
 
 	local DProperties = table.Copy(vgui.GetControlTable("DProperties"))
 	local tblCategory = getupvalues(DProperties.GetCategory).tblCategory
@@ -74,6 +94,16 @@ local function ColorHack()
 	end
 
 	derma.DefineControl("DProperties", "", DProperties, "Panel")
+
+	local DTree_Node_Button = table.Copy(vgui.GetControlTable("DTree_Node_Button"))
+	DTree_Node_Button.UpdateColours = function(self, skin)
+		-- m_bSelectable is false on this for some reason
+		if self.m_bSelected then return self:SetTextStyleColor( skin.Colours.Tree.Selected ) end
+		if self.Hovered then return self:SetTextStyleColor( skin.Colours.Tree.Hover ) end
+
+		return self:SetTextStyleColor( skin.Colours.Tree.Normal )
+	end
+	derma.DefineControl( "DTree_Node_Button", "Tree Node Button", DTree_Node_Button, "DButton" )
 end
 
 hook.Add("ForceDermaSkin","Themer",function()

@@ -49,8 +49,8 @@ All changes require applying changes.]])
 		skinlist:AddChoice(f)
 	end
 
-	local reload = panel:Button("Refresh Lists")
-	reload.DoClick = function(s)
+	local refresh = panel:Button("Refresh Lists")
+	refresh.DoClick = function(s)
 		filelist:Clear()
 		skinlist:Clear()
 		files = {}
@@ -72,7 +72,7 @@ All changes require applying changes.]])
 			skinlist:AddChoice(f)
 		end
 	end
-	reload:SetIcon("icon16/arrow_refresh.png")
+	refresh:SetIcon("icon16/arrow_refresh.png")
 
 	local reload = panel:Button("Reload Spawnmenu","spawnmenu_reload")
 	reload:SetTooltip("Only do this if you really have to, as in things aren't updating.")
@@ -80,14 +80,6 @@ All changes require applying changes.]])
 
 	local apply = panel:Button("Apply Changes","themer_refresh_derma")
 	apply:SetIcon("icon16/tick.png")
-end
-
-local function Tweaks(panel)
-	panel:Help([[Here you can tweak various settings to match the theme.
-Things like text entries and options in menus don't have their own color setting within the image file, so you can set them here.]])
-
-	panel:CheckBox("Use Label Color for Text Entry and Menu Options","themer_tweaks_uselabel")
-	panel:ControlHelp("(requires theme reapplication)")
 end
 
 local function IconSettings(panel)
@@ -163,7 +155,6 @@ end
 
 hook.Add("PopulateToolMenu","Themer.ToolMenu",function()
 	spawnmenu.AddToolMenuOption("Theming","Theming","\1Theme Options","Theme Options","","",MakeMenu)
-	spawnmenu.AddToolMenuOption("Theming","Configuration","Finer Tweaking","Finer Tweaking","","",Tweaks)
 	spawnmenu.AddToolMenuOption("Theming","Configuration","Icons","Icons","","",IconSettings)
 	spawnmenu.AddToolMenuOption("Theming","Misc","About","About","","",About)
 
@@ -191,12 +182,6 @@ local function ExtSettings()
 	MakeMenu(main)
 	main:SetName("Theme Options")
 	tabs:AddSheet("Theme Options",main,"icon16/palette.png")
-
-	--Tweaks--
-	local tweaks = vgui.Create("DForm",tabs)
-	Tweaks(tweaks)
-	tweaks:SetName("Finer Tweaks")
-	tabs:AddSheet("Finer Tweaks",tweaks,"icon16/wrench.png")
 
 	--Icons--
 	local icons = vgui.Create("DForm",tabs)
