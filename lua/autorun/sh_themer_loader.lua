@@ -5,20 +5,22 @@ AddCSLuaFile("themer/spawnmenu.lua")
 
 if SERVER then
 	resource.AddWorkshop("938347376")
+
 	return
 end
-include'skins/themer.lua'
 
-surface.CreateFont("Themer.Title",{
+include("skins/themer.lua")
+
+surface.CreateFont("Themer.Title", {
 	font = "Roboto",
 	size = 48,
 	weight = 400,
 })
 
-surface.CreateFont("Themer.Title2",{
+surface.CreateFont("Themer.Title2", {
 	font = "Roboto",
 	size = 32,
 	weight = 400,
 })
 
-include'themer/main.lua'
+include("themer/main.lua")
